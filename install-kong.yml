@@ -1,0 +1,17 @@
+---
+- hosts: all
+  become: true
+  become_method: sudo
+
+  tasks:
+    - name: Download deb
+      get_url: url=https://download.konghq.com/gateway-3.x-ubuntu-focal/pool/all/k/kong/kong_3.0.0_amd64.deb dest=/tmp/kong.deb mode=0600
+
+    - name: Install deb
+      command: dpkg -i /tmp/kong.deb
+
+    - name: Setup configuration
+      copy: src=kong.conf dest=/etc/kong/kong.conf
+
+    - name: Enable start boot service
+      service: name=kong state=started enabled=yes
